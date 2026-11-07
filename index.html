@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#050505">
+<title>FOOD RNG X — Coming Soon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--white:#f4f1eb}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:#050505;color:var(--white)}
+body{min-height:100svh;overflow:hidden;font-family:Inter,Arial,sans-serif;display:grid;place-items:center}
+main{position:relative;isolation:isolate;width:100%;min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px 76px;text-align:center;overflow:hidden}
+.ambient{position:absolute;inset:-30%;z-index:-3;background:radial-gradient(ellipse at 50% 48%,#171717 0%,#090909 32%,#050505 65%);pointer-events:none}
+.giant-x{position:absolute;z-index:-2;top:50%;left:50%;transform:translate(-50%,-53%);font-family:"Cormorant Garamond",Georgia,serif;font-weight:400;font-size:min(88vw,1050px);line-height:.75;color:#111;user-select:none;pointer-events:none}
+.x-light{position:absolute;z-index:-1;inset:0;display:grid;place-items:center;pointer-events:none;overflow:hidden}
+.x-light span{font-family:"Cormorant Garamond",Georgia,serif;font-weight:400;font-size:min(88vw,1050px);line-height:.75;color:transparent;background:linear-gradient(110deg,#fff 0%,#d8d3ca 45%,#fff 100%);background-clip:text;-webkit-background-clip:text;opacity:.8;mask-image:radial-gradient(ellipse 19% 31% at var(--px,50%) var(--py,50%),#000 0%,transparent 100%);-webkit-mask-image:radial-gradient(ellipse 19% 31% at var(--px,50%) var(--py,50%),#000 0%,transparent 100%)}
+.beam{position:absolute;z-index:-1;width:150vmax;height:150vmax;left:50%;top:50%;transform:translate(-50%,-50%);background:conic-gradient(from 0deg,transparent 0deg,transparent 154deg,rgba(255,255,255,.035) 174deg,rgba(255,255,255,.12) 180deg,rgba(255,255,255,.035) 186deg,transparent 206deg,transparent 360deg);animation:turn 14s linear infinite;pointer-events:none;mix-blend-mode:screen}
+@keyframes turn{to{transform:translate(-50%,-50%) rotate(360deg)}}
+.eyebrow{font-size:10px;letter-spacing:.42em;text-transform:uppercase;color:#aaa;margin:0 0 24px;font-weight:400}
+h1{font-size:clamp(13px,1.6vw,17px);font-weight:400;letter-spacing:.48em;margin:0 0 45px;padding-left:.48em;color:#e8e5df}
+.countdown{display:flex;align-items:flex-start;justify-content:center;gap:clamp(14px,4vw,54px);position:relative}
+.unit{min-width:clamp(54px,8vw,112px)}
+.value{font-family:"Cormorant Garamond",Georgia,serif;font-size:clamp(48px,9vw,112px);font-weight:400;line-height:.9;letter-spacing:-.045em;font-variant-numeric:tabular-nums}
+.label{font-size:9px;letter-spacing:.28em;color:#898989;margin-top:16px}
+.date{font-size:10px;letter-spacing:.22em;color:#999;margin-top:42px;text-transform:uppercase}
+footer{position:absolute;bottom:28px;left:0;width:100%;font-size:9px;letter-spacing:.38em;color:#777;text-align:center}
+@media(max-width:480px){main{padding-bottom:70px}.eyebrow{letter-spacing:.28em}h1{letter-spacing:.3em;margin-bottom:38px}.countdown{gap:10px}.unit{min-width:58px}.value{font-size:clamp(43px,13vw,62px)}.label{font-size:7px;letter-spacing:.16em}.date{font-size:8px;letter-spacing:.14em}}
+@media(prefers-reduced-motion:reduce){.beam{animation:none}}
+</style>
+</head>
+<body>
+<main>
+<div class="ambient"></div>
+<div class="giant-x" aria-hidden="true">X</div>
+<div class="x-light" aria-hidden="true"><span>X</span></div>
+<div class="beam" aria-hidden="true"></div>
+<p class="eyebrow">A new era is approaching</p>
+<h1>FOOD RNG X</h1>
+<section class="countdown" aria-label="Countdown to launch">
+<div class="unit"><div class="value" id="days">00</div><div class="label">DAYS</div></div>
+<div class="unit"><div class="value" id="hours">00</div><div class="label">HOURS</div></div>
+<div class="unit"><div class="value" id="minutes">00</div><div class="label">MINUTES</div></div>
+<div class="unit"><div class="value" id="seconds">00</div><div class="label">SECONDS</div></div>
+</section>
+<p class="date">November 20, 2026 · 5:00 PM MST</p>
+<footer>NATHAN × LUCAS</footer>
+</main>
+<script>
+const target = Date.UTC(2026,10,21,0,0,0);
+const ids=["days","hours","minutes","seconds"];
+function tick(){
+ let diff=Math.max(0,target-Date.now());
+ const vals=[Math.floor(diff/86400000),Math.floor(diff%86400000/3600000),Math.floor(diff%3600000/60000),Math.floor(diff%60000/1000)];
+ ids.forEach((id,i)=>document.getElementById(id).textContent=String(vals[i]).padStart(2,"0"));
+}
+tick();setInterval(tick,1000);
+const root=document.querySelector(".x-light");
+let t=0;
+function sweep(){
+ t+=0.0035;
+ const px=50+31*Math.cos(t),py=50+25*Math.sin(t*0.83);
+ root.style.setProperty("--px",px+"%");
+ root.style.setProperty("--py",py+"%");
+ requestAnimationFrame(sweep);
+}
+if(!matchMedia("(prefers-reduced-motion: reduce)").matches)requestAnimationFrame(sweep);
+</script>
+</body>
+</html>
